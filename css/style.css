@@ -862,13 +862,18 @@ body:not(:hover) .cursor-ring { opacity: 0; }
 }
 .portfolio-item:hover .portfolio-item__thumb { transform: scale(1.03); }
 
-/* Portfolio backgrounds */
-.pf-bg-1 { background: linear-gradient(135deg, #1a0a3a, #3b0d6e, #6d28d9); }
-.pf-bg-2 { background: linear-gradient(135deg, #042f4a, #065f88, #0ea5e9); }
-.pf-bg-3 { background: linear-gradient(135deg, #1a1200, #52400a, #a16207); }
-.pf-bg-4 { background: linear-gradient(135deg, #0a2a1a, #065f46, #10b981); }
-.pf-bg-5 { background: linear-gradient(135deg, #2a0a1a, #7c1d48, #ec4899); }
-.pf-bg-6 { background: linear-gradient(135deg, #1a0510, #580d35, #be185d); }
+/* Portfolio project image backgrounds */
+.portfolio-item__thumb {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.pf-bg-1 { background-image: linear-gradient(135deg, rgba(26,10,58,0.18), rgba(109,40,217,0.10)), url("../assets/projects/techvibe-rebrand.png"); }
+.pf-bg-2 { background-image: linear-gradient(135deg, rgba(4,47,74,0.18), rgba(14,165,233,0.10)), url("../assets/projects/ecommerce-growth-campaign.png"); }
+.pf-bg-3 { background-image: linear-gradient(135deg, rgba(26,18,0,0.18), rgba(161,98,7,0.10)), url("../assets/projects/fintech-security-audit.png"); }
+.pf-bg-4 { background-image: linear-gradient(135deg, rgba(10,42,26,0.18), rgba(16,185,129,0.10)), url("../assets/projects/healthapp-ui-ux.png"); }
+.pf-bg-5 { background-image: linear-gradient(135deg, rgba(42,10,26,0.18), rgba(236,72,153,0.10)), url("../assets/projects/social-media-takeover.png"); }
+.pf-bg-6 { background-image: linear-gradient(135deg, rgba(26,5,16,0.18), rgba(190,24,93,0.10)), url("../assets/projects/corporate-network-hardening.png"); }
 
 /* Portfolio pattern overlays */
 .pf-bg-1::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 70% 30%, rgba(139,92,246,0.4), transparent 60%); }
@@ -877,7 +882,7 @@ body:not(:hover) .cursor-ring { opacity: 0; }
 
 .pf-overlay {
   position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(4,3,10,0.95) 0%, rgba(4,3,10,0.3) 60%, transparent 100%);
+  background: linear-gradient(to top, rgba(4,3,10,0.96) 0%, rgba(4,3,10,0.58) 48%, rgba(4,3,10,0.10) 100%);
   padding: 2rem;
   display: flex; flex-direction: column; justify-content: flex-end;
   transform: translateY(30px);
