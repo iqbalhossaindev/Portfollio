@@ -380,48 +380,135 @@ function initTestimonials() {
   const dotsW = qs('#testiDots');
   if (!track) return;
 
-  const cards = qsa('.testi-card', track);
-  let current = 0;
-  let autoplay;
+  const cards   = qsa('.testi-card', track);
+  const section = track.closest('.testimonials') || track;
+  if (!cards.length) return;
+
+  let current   = 0;
+  let autoplay  = null;
+  let isVisible = false;
+  let isHovered = false;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* Build dots */
-  cards.forEach((_, i) => {
-    const dot = document.createElement('button');
-    dot.className = 'testi-dot' + (i === 0 ? ' active' : '');
-    dot.setAttribute('role', 'tab');
-    dot.setAttribute('aria-label', `Testimonial ${i + 1}`);
-    dot.addEventListener('click', () => goTo(i));
-    dotsW && dotsW.appendChild(dot);
-  });
-
-  function goTo(idx) {
-    current = (idx + cards.length) % cards.length;
-    const card = cards[current];
-    const left = card.offsetLeft - track.offsetLeft;
-
-    /* Scroll only the carousel track horizontally.
-       scrollIntoView can move the whole page down when autoplay runs. */
-    track.scrollTo({ left, behavior: 'smooth' });
-    qsa('.testi-dot', dotsW).forEach((d, i) => d.classList.toggle('active', i === current));
+  if (dotsW) {
+    dotsW.innerHTML = '';
+    cards.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.className = 'testi-dot' + (i === 0 ? ' active' : '');
+      dot.type = 'button';
+      dot.setAttribute('role', 'tab');
+      dot.setAttribute('aria-label', `Show testimonial ${i + 1}`);
+      dot.addEventListener('click', () => {
+        goTo(i, { smooth: true, preservePageScroll: true });
+        resetAuto();
+      });
+      dotsW.appendChild(dot);
+    });
   }
 
-  prev && prev.addEventListener('click', () => { goTo(current - 1); resetAuto(); });
-  next && next.addEventListener('click', () => { goTo(current + 1); resetAuto(); });
+  function updateDots() {
+    if (!dotsW) return;
+    qsa('.testi-dot', dotsW).forEach((d, i) => {
+      d.classList.toggle('active', i === current);
+      d.setAttribute('aria-selected', i === current ? 'true' : 'false');
+    });
+  }
 
-  function startAuto() { autoplay = setInterval(() => goTo(current + 1), 4500); }
-  function resetAuto()  { clearInterval(autoplay); startAuto(); }
-  startAuto();
+  function preservePageScroll(callback) {
+    const x = window.scrollX;
+    const y = window.scrollY;
+    callback();
 
-  /* Pause on hover */
-  track.addEventListener('mouseenter', () => clearInterval(autoplay));
-  track.addEventListener('mouseleave', () => startAuto());
+    /* Some browsers try to bring a horizontal scroll-snap carousel into view.
+       Restore the page position so autoplay never pulls the user down to this section. */
+    requestAnimationFrame(() => {
+      if (Math.abs(window.scrollY - y) > 2 || Math.abs(window.scrollX - x) > 2) {
+        window.scrollTo(x, y);
+      }
+    });
+  }
+
+  function goTo(idx, options = {}) {
+    current = (idx + cards.length) % cards.length;
+    const card = cards[current];
+    const left = Math.max(0, card.offsetLeft - track.offsetLeft);
+    const behavior = options.smooth && !reduceMotion ? 'smooth' : 'auto';
+
+    const moveTrackOnly = () => {
+      track.scrollTop = 0;
+      if (typeof track.scrollTo === 'function') {
+        track.scrollTo({ left, top: 0, behavior });
+      } else {
+        track.scrollLeft = left;
+      }
+    };
+
+    options.preservePageScroll ? preservePageScroll(moveTrackOnly) : moveTrackOnly();
+    updateDots();
+  }
+
+  function stopAuto() {
+    if (!autoplay) return;
+    clearInterval(autoplay);
+    autoplay = null;
+  }
+
+  function startAuto() {
+    if (cards.length < 2 || autoplay || isHovered || !isVisible || document.hidden || reduceMotion) return;
+    autoplay = setInterval(() => {
+      goTo(current + 1, { smooth: false, preservePageScroll: true });
+    }, 4500);
+  }
+
+  function resetAuto() {
+    stopAuto();
+    startAuto();
+  }
+
+  prev && prev.addEventListener('click', () => {
+    goTo(current - 1, { smooth: true, preservePageScroll: true });
+    resetAuto();
+  });
+
+  next && next.addEventListener('click', () => {
+    goTo(current + 1, { smooth: true, preservePageScroll: true });
+    resetAuto();
+  });
+
+  /* Start autoplay only when the testimonial section is actually visible.
+     This removes the page-jump-to-What Clients Say problem. */
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(([entry]) => {
+      isVisible = entry.isIntersecting && entry.intersectionRatio >= 0.15;
+      isVisible ? startAuto() : stopAuto();
+    }, { threshold: [0, 0.15, 0.35] });
+    io.observe(section);
+  } else {
+    isVisible = true;
+    startAuto();
+  }
+
+  track.addEventListener('mouseenter', () => { isHovered = true; stopAuto(); });
+  track.addEventListener('mouseleave', () => { isHovered = false; startAuto(); });
+  track.addEventListener('focusin', stopAuto);
+  track.addEventListener('focusout', startAuto);
+
+  document.addEventListener('visibilitychange', () => {
+    document.hidden ? stopAuto() : startAuto();
+  });
 
   /* Touch/swipe */
   let touchStartX = 0;
   track.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
-  track.addEventListener('touchend',   e => {
+  track.addEventListener('touchend', e => {
     const dx = e.changedTouches[0].clientX - touchStartX;
-    if (Math.abs(dx) > 40) { dx > 0 ? goTo(current - 1) : goTo(current + 1); }
+    if (Math.abs(dx) > 40) {
+      dx > 0
+        ? goTo(current - 1, { smooth: true, preservePageScroll: true })
+        : goTo(current + 1, { smooth: true, preservePageScroll: true });
+      resetAuto();
+    }
   }, { passive: true });
 }
 
@@ -587,10 +674,29 @@ function initAllModules() {
   initParallax();
 }
 
+/* Keep the landing page at the top on normal loads.
+   Fixes accidental reload/bookmark jumps to the testimonials section. */
+function lockInitialScrollPosition() {
+  const hash = window.location.hash;
+  const shouldStartAtTop = !hash || hash === '#testimonials';
+  if (!shouldStartAtTop) return;
+
+  if (hash === '#testimonials' && history.replaceState) {
+    history.replaceState(null, document.title, window.location.pathname + window.location.search);
+  }
+
+  let frames = 0;
+  const keepTop = () => {
+    window.scrollTo(0, 0);
+    if (++frames < 12) requestAnimationFrame(keepTop);
+  };
+
+  window.scrollTo(0, 0);
+  requestAnimationFrame(keepTop);
+}
+
 /* ═══ BOOT ═══ */
 document.addEventListener('DOMContentLoaded', () => {
-  if (!window.location.hash) {
-    window.scrollTo(0, 0);
-  }
+  lockInitialScrollPosition();
   initPreloader();
 });
