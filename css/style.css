@@ -951,6 +951,8 @@ body:not(:hover) .cursor-ring { opacity: 0; }
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  overscroll-behavior-x: contain;
+  overscroll-behavior-y: none;
   transition: transform 0.5s var(--ease-out);
 }
 .testimonials__track::-webkit-scrollbar { display: none; }
