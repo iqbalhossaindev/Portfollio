@@ -1,0 +1,22 @@
+# Iqbal Hossain
+
+> Iqbal Hossain is a multidisciplinary professional offering graphics design, digital marketing, SEO, and cyber security consulting services worldwide.
+
+Website: https://theiqbal.com/
+Contact: hello@theiqbal.com
+WhatsApp: +1 (579) 899-5633
+Profile: https://iqbalhossain.bio.link/
+
+## Primary services
+
+- Graphics Design: brand identity, logo design, UI/UX, web design, social media graphics, print design, packaging design, motion graphics.
+- Digital Marketing: SEO, search optimization, social media marketing, PPC, email marketing, content strategy, analytics.
+- Cyber Security: vulnerability assessment, penetration testing, security audits, hardening, network security, cloud security, consulting, training.
+
+## Canonical pages
+
+- Home: https://theiqbal.com/
+- Services: https://theiqbal.com/#services
+- Portfolio: https://theiqbal.com/#portfolio
+- Reviews: https://theiqbal.com/#testimonials
+- Contact: https://theiqbal.com/#contact

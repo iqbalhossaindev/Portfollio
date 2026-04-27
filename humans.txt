@@ -1,0 +1,11 @@
+/* TEAM */
+Owner: Iqbal Hossain
+Site: https://theiqbal.com/
+Contact: hello@theiqbal.com
+Role: Graphics Designer, Digital Marketer, SEO Specialist, Cyber Security Consultant
+
+/* SITE */
+Language: English
+Last updated: 2026-04-27
+Services: Graphics Design, Digital Marketing, SEO, Cyber Security
+Standards: HTML5, CSS3, JavaScript, Schema.org JSON-LD, Open Graph, Twitter Cards

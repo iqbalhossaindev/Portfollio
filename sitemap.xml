@@ -1,49 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://theiqbal.com/</loc>
-    <lastmod>2025-01-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>1.0</priority>
-  </url>
-
-  <url>
-    <loc>https://theiqbal.com/#about</loc>
-    <lastmod>2025-01-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://theiqbal.com/#services</loc>
-    <lastmod>2025-01-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <url>
-    <loc>https://theiqbal.com/#portfolio</loc>
-    <lastmod>2025-01-01</lastmod>
+    <lastmod>2026-04-27</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://theiqbal.com/og-image.png</image:loc>
+      <image:title>Iqbal Hossain Portfolio</image:title>
+      <image:caption>Graphics Design, Digital Marketing, SEO and Cyber Security services by Iqbal Hossain</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://theiqbal.com/iqbal.png</image:loc>
+      <image:title>Iqbal Hossain</image:title>
+      <image:caption>Iqbal Hossain, Graphics Designer, Digital Marketer and Cyber Security Consultant</image:caption>
+    </image:image>
   </url>
-
-  <url>
-    <loc>https://theiqbal.com/#testimonials</loc>
-    <lastmod>2025-01-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://theiqbal.com/#contact</loc>
-    <lastmod>2025-01-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
 </urlset>

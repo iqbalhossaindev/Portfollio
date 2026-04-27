@@ -153,3 +153,14 @@ After setting your live URL, update `sitemap.xml`:
 ## 📝 License
 
 © 2025 Iqbal Hossain. All rights reserved.
+
+
+## SEO Enhancements Added
+
+- Canonical, robots, Googlebot, Bingbot, Open Graph, Twitter/X, app-indexing and mobile metadata.
+- Expanded Schema.org JSON-LD graph for `Person`, `ProfilePage`, `WebSite`, `ProfessionalService`, `Service`, `ItemList`, reviews and breadcrumbs.
+- Clean canonical sitemap with image metadata and current `lastmod`.
+- `robots.txt`, `site.webmanifest`, `favicon.svg`, PNG app icons, `og-image.png`, `humans.txt`, `llms.txt`, `CNAME`, `_headers`, and `.htaccess`.
+- Semantic `<main>` landmark and skip link for accessibility without visual design changes.
+
+Last SEO update: 2026-04-27

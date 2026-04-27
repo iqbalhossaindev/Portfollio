@@ -1,8 +1,16 @@
 User-agent: *
 Allow: /
+Allow: /css/
+Allow: /js/
+Allow: /*.css$
+Allow: /*.js$
+Allow: /*.png$
+Allow: /*.svg$
 
-Sitemap: https://theiqbal.com/sitemap.xml
-
-# Disallow admin/hidden paths
 Disallow: /admin/
 Disallow: /private/
+Disallow: /tmp/
+Disallow: /*?replytocom=
+
+Sitemap: https://theiqbal.com/sitemap.xml
+Host: theiqbal.com
