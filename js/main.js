@@ -455,10 +455,9 @@ function initTestimonials() {
   }
 
   function startAuto() {
-    if (cards.length < 2 || autoplay || isHovered || !isVisible || document.hidden || reduceMotion) return;
-    autoplay = setInterval(() => {
-      goTo(current + 1, { smooth: false, preservePageScroll: true });
-    }, 4500);
+    /* Autoplay intentionally disabled: automatic carousel scrolling was causing browsers
+       to pull the page down to the testimonials section on some devices. */
+    return;
   }
 
   function resetAuto() {

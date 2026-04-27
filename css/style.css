@@ -67,6 +67,21 @@ ul, ol { list-style: none; }
 button { font-family: inherit; cursor: none; border: none; background: none; }
 .fira { font-family: var(--font-mono); }
 
+
+/* Accessibility link removed from markup; this also hides cached/old skip links. */
+.skip-link {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
 /* ═══ SCROLLBAR ═══ */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
@@ -1174,6 +1189,38 @@ body:not(:hover) .cursor-ring { opacity: 0; }
 }
 .footer__tagline { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem; }
 .footer__copy-small { font-size: 0.8rem; color: var(--text-muted); font-style: italic; }
+.footer__social {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+.footer__social-link {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.03);
+  transition: transform 0.2s ease, color 0.2s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+.footer__social-link svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+.footer__social-link:hover,
+.footer__social-link:focus-visible {
+  color: var(--cyan);
+  border-color: var(--cyan);
+  background: rgba(0, 229, 255, 0.08);
+  box-shadow: 0 0 18px rgba(0, 229, 255, 0.18);
+  transform: translateY(-3px);
+}
 .footer__nav-title { font-family: var(--font-display); font-size: 0.95rem; font-weight: 700; margin-bottom: 1.2rem; }
 .footer__nav ul, .footer__services ul, .footer__contact ul { display: flex; flex-direction: column; gap: 0.6rem; }
 .footer__nav a, .footer__services a, .footer__contact a {
