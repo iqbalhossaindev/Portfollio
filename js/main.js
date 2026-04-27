@@ -4,6 +4,11 @@
 
 'use strict';
 
+/* Stop browsers from restoring an old scroll position on reload. */
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+
 /* ═══ UTILITY ═══ */
 const qs  = (s, ctx = document) => ctx.querySelector(s);
 const qsa = (s, ctx = document) => [...ctx.querySelectorAll(s)];
@@ -172,7 +177,7 @@ function initHeroCanvas() {
 function initCursor() {
   const dot  = qs('#cursorDot');
   const ring = qs('#cursorRing');
-  if (!dot || !ring || window.innerWidth < 768) return;
+  if (!dot || !ring || window.innerWidth < 768 || window.matchMedia('(hover: none), (pointer: coarse)').matches) return;
 
   let mx = 0, my = 0, rx = 0, ry = 0;
 
@@ -201,6 +206,7 @@ function initCursor() {
    4. MAGNETIC BUTTONS
 ═══════════════════════════════════════ */
 function initMagnetic() {
+  if (window.matchMedia('(hover: none), (pointer: coarse)').matches) return;
   qsa('.magnetic').forEach(el => {
     el.addEventListener('mousemove', e => {
       const r  = el.getBoundingClientRect();
@@ -391,7 +397,11 @@ function initTestimonials() {
   function goTo(idx) {
     current = (idx + cards.length) % cards.length;
     const card = cards[current];
-    card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    const left = card.offsetLeft - track.offsetLeft;
+
+    /* Scroll only the carousel track horizontally.
+       scrollIntoView can move the whole page down when autoplay runs. */
+    track.scrollTo({ left, behavior: 'smooth' });
     qsa('.testi-dot', dotsW).forEach((d, i) => d.classList.toggle('active', i === current));
   }
 
@@ -465,6 +475,7 @@ function initFooterYear() {
    14. 3D CARD TILT (service cards)
 ═══════════════════════════════════════ */
 function initCardTilt() {
+  if (window.matchMedia('(hover: none), (pointer: coarse)').matches) return;
   qsa('.service-card').forEach(card => {
     card.addEventListener('mousemove', e => {
       const r  = card.getBoundingClientRect();
@@ -545,7 +556,7 @@ function initSmoothScroll() {
 ═══════════════════════════════════════ */
 function initParallax() {
   const hero = qs('.hero__content');
-  if (!hero) return;
+  if (!hero || window.matchMedia('(max-width: 900px)').matches) return;
 
   window.addEventListener('scroll', () => {
     const y = window.scrollY;
@@ -578,5 +589,8 @@ function initAllModules() {
 
 /* ═══ BOOT ═══ */
 document.addEventListener('DOMContentLoaded', () => {
+  if (!window.location.hash) {
+    window.scrollTo(0, 0);
+  }
   initPreloader();
 });
