@@ -561,323 +561,24 @@ function initFooterYear() {
    14. 3D CARD TILT (service cards)
 ═══════════════════════════════════════ */
 function initCardTilt() {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-  const selector = '.service-card, .portfolio-item__inner, .process-step, .testi-card, .contact-form, .stat-card, .contact-channel, .about__image-wrap';
-  const cards = qsa(selector);
-  if (!cards.length) return;
-
-  const supportsHover = !window.matchMedia('(hover: none), (pointer: coarse)').matches;
-  if (!supportsHover) return;
-
-  cards.forEach(card => {
-    const strength = card.classList.contains('contact-channel') ? 5 : card.classList.contains('portfolio-item__inner') ? 10 : 7;
-    const lift = card.classList.contains('portfolio-item__inner') ? 12 : 6;
-    let raf = null;
-    let state = { rx: 0, ry: 0, tx: 0, ty: 0, scale: 1 };
-
-    const apply = () => {
-      raf = null;
-      card.style.transform = `perspective(1200px) translate3d(${state.tx}px, ${state.ty}px, 0) rotateX(${state.rx}deg) rotateY(${state.ry}deg) scale(${state.scale})`;
-    };
-    const requestApply = () => { if (!raf) raf = requestAnimationFrame(apply); };
-
+  if (window.matchMedia('(hover: none), (pointer: coarse)').matches) return;
+  qsa('.service-card').forEach(card => {
     card.addEventListener('mousemove', e => {
-      const r = card.getBoundingClientRect();
-      const px = (e.clientX - r.left) / r.width;
-      const py = (e.clientY - r.top) / r.height;
-      state.ry = (px - 0.5) * strength;
-      state.rx = (0.5 - py) * strength;
-      state.tx = (px - 0.5) * 8;
-      state.ty = (py - 0.5) * 4 - lift;
-      state.scale = 1.012;
-      requestApply();
+      const r  = card.getBoundingClientRect();
+      const cx = r.left + r.width  / 2;
+      const cy = r.top  + r.height / 2;
+      const rx = ((e.clientY - cy) / (r.height / 2)) * -6;
+      const ry = ((e.clientX - cx) / (r.width  / 2)) *  6;
+      card.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-8px)`;
     });
-
     card.addEventListener('mouseleave', () => {
-      state = { rx: 0, ry: 0, tx: 0, ty: 0, scale: 1 };
-      requestApply();
+      card.style.transform = '';
     });
   });
 }
 
 /* ═══════════════════════════════════════
-   15. CINEMATIC CANVAS BACKGROUND
-═══════════════════════════════════════ */
-function initCinematicCanvas() {
-  const canvas = qs('#cinematicCanvas');
-  if (!canvas || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-  const ctx = canvas.getContext('2d', { alpha: true });
-  let W = 0, H = 0, DPR = 1;
-  let frame = 0;
-  let scrollTarget = window.scrollY || 0;
-  let scrollY = scrollTarget;
-  let pointerTarget = { x: 0, y: 0 };
-  let pointer = { x: 0, y: 0 };
-  let stars = [];
-  let streams = [];
-  const palette = ['#00d4ff', '#8b5cf6', '#f59e0b', '#10b981', '#ff3d5a'];
-
-  function resize() {
-    DPR = Math.min(window.devicePixelRatio || 1, 1.75);
-    W = window.innerWidth;
-    H = window.innerHeight;
-    canvas.width = Math.floor(W * DPR);
-    canvas.height = Math.floor(H * DPR);
-    canvas.style.width = W + 'px';
-    canvas.style.height = H + 'px';
-    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    buildScene();
-  }
-
-  function buildScene() {
-    const starCount = Math.max(80, Math.min(190, Math.floor((W * H) / 10500)));
-    stars = Array.from({ length: starCount }, (_, i) => ({
-      x: Math.random() * W,
-      y: Math.random() * H,
-      z: Math.random() * 0.9 + 0.1,
-      r: Math.random() * 1.7 + 0.25,
-      hue: palette[i % palette.length],
-      phase: Math.random() * Math.PI * 2,
-      vx: (Math.random() - 0.5) * 0.18,
-      vy: (Math.random() - 0.5) * 0.18
-    }));
-
-    streams = Array.from({ length: 9 }, (_, i) => ({
-      x: (i / 8) * W + (Math.random() - 0.5) * 80,
-      y: Math.random() * H,
-      z: Math.random() * 0.6 + 0.25,
-      speed: Math.random() * 0.9 + 0.35,
-      color: i % 3 === 0 ? '#00d4ff' : i % 3 === 1 ? '#8b5cf6' : '#10b981',
-      length: Math.random() * 180 + 120
-    }));
-  }
-
-  function drawDepthGrid() {
-    const horizon = H * 0.62 + Math.sin(frame * 0.01) * 10;
-    const offset = (scrollY * 0.15 + frame * 0.7) % 70;
-    ctx.save();
-    ctx.globalAlpha = 0.18;
-    ctx.strokeStyle = 'rgba(0,212,255,0.55)';
-    ctx.lineWidth = 1;
-
-    for (let i = 0; i < 24; i++) {
-      const t = i / 23;
-      const x = W * (0.5 + (t - 0.5) * 1.7);
-      ctx.beginPath();
-      ctx.moveTo(W * 0.5 + pointer.x * 24, horizon);
-      ctx.lineTo(x + pointer.x * 40, H + 80);
-      ctx.stroke();
-    }
-
-    for (let y = horizon + offset; y < H + 80; y += 70) {
-      const depth = (y - horizon) / (H - horizon + 1);
-      ctx.globalAlpha = 0.05 + depth * 0.16;
-      ctx.beginPath();
-      ctx.moveTo(-80, y);
-      ctx.lineTo(W + 80, y);
-      ctx.stroke();
-    }
-    ctx.restore();
-  }
-
-  function drawExpertiseNodes() {
-    const zones = [
-      { x: W * 0.18, y: H * 0.28, color: '#8b5cf6', sides: 3 },
-      { x: W * 0.78, y: H * 0.34, color: '#00d4ff', sides: 5 },
-      { x: W * 0.58, y: H * 0.72, color: '#f59e0b', sides: 6 }
-    ];
-    zones.forEach((z, idx) => {
-      const pulse = 0.5 + Math.sin(frame * 0.018 + idx) * 0.5;
-      const px = z.x + pointer.x * (22 + idx * 10) - scrollY * 0.01 * (idx - 1);
-      const py = z.y + pointer.y * (18 + idx * 8) + Math.sin(frame * 0.01 + idx) * 8;
-      ctx.save();
-      ctx.globalAlpha = 0.16 + pulse * 0.08;
-      const g = ctx.createRadialGradient(px, py, 0, px, py, 160 + pulse * 40);
-      g.addColorStop(0, z.color + '55');
-      g.addColorStop(1, z.color + '00');
-      ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.arc(px, py, 190 + pulse * 30, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.globalAlpha = 0.32;
-      ctx.strokeStyle = z.color;
-      ctx.lineWidth = 1.2;
-      ctx.beginPath();
-      for (let i = 0; i < z.sides; i++) {
-        const a = (Math.PI * 2 * i) / z.sides + frame * 0.004 * (idx + 1);
-        const rr = 40 + pulse * 10;
-        const xx = px + Math.cos(a) * rr;
-        const yy = py + Math.sin(a) * rr;
-        i ? ctx.lineTo(xx, yy) : ctx.moveTo(xx, yy);
-      }
-      ctx.closePath();
-      ctx.stroke();
-      ctx.restore();
-    });
-  }
-
-  function drawStreams() {
-    ctx.save();
-    streams.forEach(s => {
-      s.y -= s.speed + scrollY * 0.0006 * s.z;
-      s.x += Math.sin(frame * 0.006 + s.z * 7) * 0.25;
-      if (s.y < -s.length) {
-        s.y = H + Math.random() * 220;
-        s.x = Math.random() * W;
-      }
-      const x = s.x + pointer.x * 38 * s.z;
-      const y = s.y + pointer.y * 24 * s.z;
-      const grad = ctx.createLinearGradient(x, y, x, y + s.length);
-      grad.addColorStop(0, s.color + '00');
-      grad.addColorStop(0.42, s.color + '55');
-      grad.addColorStop(1, s.color + '00');
-      ctx.globalAlpha = 0.25 * s.z;
-      ctx.strokeStyle = grad;
-      ctx.lineWidth = 1.1 + s.z * 1.4;
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-      ctx.bezierCurveTo(x + 30 * s.z, y + s.length * 0.28, x - 26 * s.z, y + s.length * 0.65, x, y + s.length);
-      ctx.stroke();
-    });
-    ctx.restore();
-  }
-
-  function drawStars() {
-    for (let i = 0; i < stars.length; i++) {
-      const p = stars[i];
-      p.phase += 0.018;
-      p.x += p.vx + pointer.x * 0.02 * p.z;
-      p.y += p.vy - scrollY * 0.00028 * p.z;
-      if (p.x < -20) p.x = W + 20;
-      if (p.x > W + 20) p.x = -20;
-      if (p.y < -20) p.y = H + 20;
-      if (p.y > H + 20) p.y = -20;
-      const alpha = (0.18 + Math.sin(p.phase) * 0.08) * p.z;
-      ctx.globalAlpha = alpha;
-      ctx.fillStyle = p.hue;
-      ctx.beginPath();
-      ctx.arc(p.x + pointer.x * 52 * p.z, p.y + pointer.y * 36 * p.z, p.r * p.z, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.globalAlpha = 1;
-  }
-
-  function animate() {
-    frame++;
-    scrollY = lerp(scrollY, scrollTarget, 0.07);
-    pointer.x = lerp(pointer.x, pointerTarget.x, 0.055);
-    pointer.y = lerp(pointer.y, pointerTarget.y, 0.055);
-
-    ctx.clearRect(0, 0, W, H);
-    const base = ctx.createLinearGradient(0, 0, W, H);
-    base.addColorStop(0, 'rgba(4,3,10,0.22)');
-    base.addColorStop(0.42, 'rgba(5,7,22,0.10)');
-    base.addColorStop(1, 'rgba(4,3,10,0.28)');
-    ctx.fillStyle = base;
-    ctx.fillRect(0, 0, W, H);
-
-    drawExpertiseNodes();
-    drawDepthGrid();
-    drawStreams();
-    drawStars();
-    requestAnimationFrame(animate);
-  }
-
-  window.addEventListener('resize', resize, { passive: true });
-  window.addEventListener('scroll', () => { scrollTarget = window.scrollY || 0; }, { passive: true });
-  window.addEventListener('mousemove', e => {
-    pointerTarget.x = (e.clientX / Math.max(W, 1) - 0.5) * 2;
-    pointerTarget.y = (e.clientY / Math.max(H, 1) - 0.5) * 2;
-  }, { passive: true });
-
-  resize();
-  animate();
-}
-
-/* ═══════════════════════════════════════
-   16. IMMERSIVE SCROLL SCENE
-═══════════════════════════════════════ */
-function initImmersiveScene() {
-  const scene = qs('#siteScene');
-  if (!scene || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-  const layers = qsa('.scene-layer', scene);
-  const grid = qs('.scene-grid', scene);
-  const sections = qsa('.section, .stats, .footer');
-  const touchOnly = window.matchMedia('(hover: none), (pointer: coarse)').matches;
-
-  let pointerTargetX = 0;
-  let pointerTargetY = 0;
-  let pointerX = 0;
-  let pointerY = 0;
-  let scrollTarget = window.scrollY || 0;
-  let scrollY = scrollTarget;
-  let scrollTimer = null;
-
-  const updateSections = () => {
-    const vh = window.innerHeight || 1;
-    sections.forEach(section => {
-      const rect = section.getBoundingClientRect();
-      const progress = clamp((vh - rect.top) / (vh + rect.height), 0, 1);
-      const centered = (rect.top + rect.height / 2 - vh / 2) / vh;
-      section.style.setProperty('--section-shift', `${(-centered * 54).toFixed(2)}px`);
-      section.style.setProperty('--section-glow', `${(0.15 + progress * 0.24).toFixed(3)}`);
-    });
-  };
-
-  const onPointerMove = e => {
-    if (touchOnly) return;
-    pointerTargetX = (e.clientX / window.innerWidth - 0.5) * 2;
-    pointerTargetY = (e.clientY / window.innerHeight - 0.5) * 2;
-  };
-
-  const onScroll = () => {
-    scrollTarget = window.scrollY || 0;
-    document.body.classList.add('is-scrolling');
-    clearTimeout(scrollTimer);
-    scrollTimer = setTimeout(() => document.body.classList.remove('is-scrolling'), 160);
-    updateSections();
-  };
-
-  const animate = () => {
-    pointerX = lerp(pointerX, pointerTargetX, 0.06);
-    pointerY = lerp(pointerY, pointerTargetY, 0.06);
-    scrollY = lerp(scrollY, scrollTarget, 0.08);
-
-    scene.style.setProperty('--scene-x', `${(pointerX * 18).toFixed(2)}px`);
-    scene.style.setProperty('--scene-y', `${(pointerY * 14 - scrollY * 0.012).toFixed(2)}px`);
-
-    layers.forEach(layer => {
-      const depth = parseFloat(layer.dataset.depth || '0.1');
-      const tx = pointerX * depth * 100;
-      const ty = pointerY * depth * 72 - scrollY * depth * 0.07;
-      const rot = pointerX * depth * 14;
-      layer.style.transform = `translate3d(${tx.toFixed(2)}px, ${ty.toFixed(2)}px, 0) rotate(${rot.toFixed(2)}deg)`;
-    });
-
-    if (grid) {
-      const gy = scrollY * -0.052;
-      const gx = pointerX * 30;
-      const gr = pointerX * 2.8;
-      grid.style.transform = `perspective(1200px) rotateX(78deg) translate3d(${gx.toFixed(2)}px, ${gy.toFixed(2)}px, 0) rotateZ(${gr.toFixed(2)}deg)`;
-    }
-
-    requestAnimationFrame(animate);
-  };
-
-  updateSections();
-  window.addEventListener('mousemove', onPointerMove, { passive: true });
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', updateSections, { passive: true });
-  requestAnimationFrame(animate);
-}
-
-/* ═══════════════════════════════════════
-   17. STATS PARTICLES BG
-
+   15. STATS PARTICLES BG
 ═══════════════════════════════════════ */
 function initStatsParticles() {
   const wrap = qs('#statsParticles');
@@ -923,7 +624,7 @@ function initStatsParticles() {
 }
 
 /* ═══════════════════════════════════════
-   18. SMOOTH SCROLL
+   16. SMOOTH SCROLL
 ═══════════════════════════════════════ */
 function initSmoothScroll() {
   qsa('a[href^="#"]').forEach(a => {
@@ -937,7 +638,7 @@ function initSmoothScroll() {
 }
 
 /* ═══════════════════════════════════════
-   19. PARALLAX (hero text)
+   17. PARALLAX (hero text)
 ═══════════════════════════════════════ */
 function initParallax() {
   const hero = qs('.hero__content');
@@ -967,8 +668,6 @@ function initAllModules() {
   initContactForm();
   initFooterYear();
   initCardTilt();
-  initCinematicCanvas();
-  initImmersiveScene();
   initStatsParticles();
   initSmoothScroll();
   initParallax();
