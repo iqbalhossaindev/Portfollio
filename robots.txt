@@ -1,8 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://theiqbal.com/sitemap.xml
-
-# Disallow admin/hidden paths
-Disallow: /admin/
-Disallow: /private/
