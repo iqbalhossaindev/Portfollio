@@ -996,12 +996,12 @@ p, li, a, .contact-channel__value { overflow-wrap: anywhere; }
   transition: transform 0.6s var(--ease);
 }
 .portfolio-item:hover .portfolio-item__thumb { transform: scale(1.04); }
-.pf-bg-1 { background-image: url('assets/projects/techvibe-rebrand.png'); }
-.pf-bg-2 { background-image: url('assets/projects/ecommerce-growth-campaign.png'); }
-.pf-bg-3 { background-image: url('assets/projects/fintech-security-audit.png'); }
-.pf-bg-4 { background-image: url('assets/projects/healthapp-ui-ux.png'); }
-.pf-bg-5 { background-image: url('assets/projects/social-media-takeover.png'); }
-.pf-bg-6 { background-image: url('assets/projects/corporate-network-hardening.png'); }
+.pf-bg-1 { background-image: url('../assets/projects/techvibe-rebrand.png'); }
+.pf-bg-2 { background-image: url('../assets/projects/ecommerce-growth-campaign.png'); }
+.pf-bg-3 { background-image: url('../assets/projects/fintech-security-audit.png'); }
+.pf-bg-4 { background-image: url('../assets/projects/healthapp-ui-ux.png'); }
+.pf-bg-5 { background-image: url('../assets/projects/social-media-takeover.png'); }
+.pf-bg-6 { background-image: url('../assets/projects/corporate-network-hardening.png'); }
 .pf-overlay {
   position: absolute; inset: 0;
   background: linear-gradient(to top, rgba(4,3,10,0.95) 0%, rgba(4,3,10,0.4) 50%, transparent 100%);
